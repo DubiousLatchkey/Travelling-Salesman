@@ -62,7 +62,7 @@ public class GA {
         
         for(int i = 0; i < pop.populationSize(); i++){
             currentSolution = pop.getTour(i);
-            
+            int currentEnergy = currentSolution.getDistance();
             // Create new neighbour tour
             Tour newSolution = currentSolution;
 
@@ -73,30 +73,32 @@ public class GA {
             //System.out.println(tourPos1 + " " +tourPos2);
             
             // Get the cities at selected positions in the tour
-            City citySwap1 = newSolution.getCity(tourPos1);
-            City citySwap2 = newSolution.getCity(tourPos2);
+            City citySwap1 = currentSolution.getCity(tourPos1);
+            City citySwap2 = currentSolution.getCity(tourPos2);
+            
+            //System.out.println(citySwap1.xCoord +" " +citySwap2.xCoord);
 
             // Swap them
+            //System.out.println(newSolution.getCity(tourPos2).xCoord +" " +newSolution.getCity(tourPos1).xCoord);
             newSolution.setCity(tourPos2, citySwap1);
             newSolution.setCity(tourPos1, citySwap2);
             
-            if(newSolution == currentSolution){
-                System.out.println("WHYYY");
-            }
-            //System.out.println(newSolution.getCity(tourPos1).xCoord + "\n" +currentSolution.getCity(tourPos1).xCoord);
-            
             // Get "energy" (fitness) of solutions
-            int currentEnergy = currentSolution.getDistance();
+            
             int neighbourEnergy = newSolution.getDistance();
+            
+            //System.out.println(currentEnergy +" " +neighbourEnergy);
             
             //Decide if we should use the new neighbor
             //System.out.println(acceptanceProbability(currentEnergy, neighbourEnergy));
-            System.out.println(currentEnergy-neighbourEnergy);
-            if (acceptanceProbability(currentEnergy, neighbourEnergy) > Math.random()) {
-                pop.saveTour(i, newSolution);
+            //System.out.println(currentEnergy-neighbourEnergy);
+            if (acceptanceProbability(currentEnergy, neighbourEnergy) < Math.random()) {
+            	newSolution.setCity(tourPos1, citySwap1);
+                newSolution.setCity(tourPos2, citySwap2);
             }
             
         }
+        
         temperature *= 1-coolingRate;
         
         return pop;
